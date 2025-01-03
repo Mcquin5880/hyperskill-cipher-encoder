@@ -4,23 +4,36 @@ public class CipherEncoder {
 
     public static void main(String[] args) {
 
-        System.out.print("Input string:\n");
+        // temp code from previous stage
 
-        try (Scanner sc = new Scanner(System.in)) {
-            String input = sc.nextLine();
-            System.out.println("\nThe result:");
+//        System.out.print("Input string:\n");
+//
+//        try (Scanner sc = new Scanner(System.in)) {
+//            String input = sc.nextLine();
+//            System.out.println("\nThe result:");
+//
+//            StringBuilder binaryString = new StringBuilder();
+//            for (char c : input.toCharArray()) {
+//                String binary = Integer.toBinaryString(c);
+//                String paddedBinary = String.format("%7s", binary).replace(' ', '0');
+//                binaryString.append(paddedBinary);
+//            }
+//
+//            String encoded = encodeBinary(binaryString.toString());
+//
+//            System.out.println(encoded);
+//        }
 
-            StringBuilder binaryString = new StringBuilder();
-            for (char c : input.toCharArray()) {
-                String binary = Integer.toBinaryString(c);
-                String paddedBinary = String.format("%7s", binary).replace(' ', '0');
-                binaryString.append(paddedBinary);
-            }
+        Scanner sc = new Scanner(System.in);
 
-            String encoded = encodeBinary(binaryString.toString());
+        System.out.println("Input encoded string:");
+        String encoded = sc.nextLine();
+        String binaryStr = decodeToBinary(encoded);
+        String decoded = decodeBinaryStr(binaryStr);
 
-            System.out.println(encoded);
-        }
+        System.out.println("\nThe result:");
+        System.out.println(decoded);
+
     }
 
     private static String encodeBinary(String binary) {
@@ -53,5 +66,31 @@ public class CipherEncoder {
             sb.append("00 ");
         }
         sb.append("0".repeat(length));
+    }
+
+    private static String decodeToBinary(String encoded) {
+
+        String[] parts = encoded.split(" ");
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < parts.length - 1; i += 2) {
+            String currBit = parts[i].equals("0") ? "1" : "0";
+            int length = parts[i + 1].length();
+            sb.append(currBit.repeat(length));
+        }
+
+        return sb.toString();
+    }
+
+    private static String decodeBinaryStr(String binaryStr) {
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < binaryStr.length(); i += 7) {
+            int asciiValue = Integer.parseInt(binaryStr.substring(i, i + 7), 2);
+            sb.append((char) asciiValue);
+        }
+
+        return sb.toString();
     }
 }
