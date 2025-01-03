@@ -4,15 +4,17 @@ public class CipherEncoder {
 
     public static void main(String[] args) {
 
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Input string:");
-        String input = sc.nextLine();
-        StringBuilder sb = new StringBuilder();
+        System.out.print("Input string:\n");
 
-        for (char c : input.toCharArray()) {
-            sb.append(c).append(" ");
+        try (Scanner sc = new Scanner(System.in)) {
+            String input = sc.nextLine();
+            System.out.println("\nThe result:");
+
+            for (char c : input.toCharArray()) {
+                String binary = Integer.toBinaryString(c);
+                String paddedBinary = String.format("%7s", binary).replace(' ', '0');
+                System.out.printf("%c = %s%n", c, paddedBinary);
+            }
         }
-
-        System.out.println(sb);
     }
 }
