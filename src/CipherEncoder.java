@@ -1,43 +1,86 @@
 import java.util.Scanner;
+import java.util.Set;
 
 public class CipherEncoder {
 
     public static void main(String[] args) {
-
-        // temp code from previous stage
-
-//        System.out.print("Input string:\n");
-//
-//        try (Scanner sc = new Scanner(System.in)) {
-//            String input = sc.nextLine();
-//            System.out.println("\nThe result:");
-//
-//            StringBuilder binaryString = new StringBuilder();
-//            for (char c : input.toCharArray()) {
-//                String binary = Integer.toBinaryString(c);
-//                String paddedBinary = String.format("%7s", binary).replace(' ', '0');
-//                binaryString.append(paddedBinary);
-//            }
-//
-//            String encoded = encodeBinary(binaryString.toString());
-//
-//            System.out.println(encoded);
-//        }
-
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Input encoded string:");
-        String encoded = sc.nextLine();
-        String binaryStr = decodeToBinary(encoded);
-        String decoded = decodeBinaryStr(binaryStr);
+        while (true) {
+            System.out.println("Please input operation (encode/decode/exit):");
+            String command = sc.nextLine();
 
-        System.out.println("\nThe result:");
-        System.out.println(decoded);
+            if (command.equals("exit")) {
+                System.out.println("Bye!");
+                break;
+            }
 
+            if (!command.equals("encode") && !command.equals("decode")) {
+                System.out.println("There is no '" + command + "' operation\n");
+                continue;
+            }
+
+            if (command.equals("encode")) {
+                System.out.println("Input string:");
+                String input = sc.nextLine();
+                StringBuilder binaryString = new StringBuilder();
+                for (char c : input.toCharArray()) {
+                    String binary = Integer.toBinaryString(c);
+                    String paddedBinary = String.format("%7s", binary).replace(' ', '0');
+                    binaryString.append(paddedBinary);
+                }
+                String encoded = encodeBinary(binaryString.toString());
+                System.out.println("Encoded string:");
+                System.out.println(encoded + "\n");
+            }
+
+            if (command.equals("decode")) {
+                System.out.println("Input encoded string:");
+                String encoded = sc.nextLine();
+
+                if (!validateEncodedString(encoded)) {
+                    System.out.println("Encoded string is not valid.\n");
+                    continue;
+                }
+
+                String binaryStr = decodeToBinary(encoded);
+                if (binaryStr.length() % 7 != 0) {
+                    System.out.println("Encoded string is not valid.\n");
+                    continue;
+                }
+
+                String decoded = decodeBinaryStr(binaryStr);
+                System.out.println("Decoded string:");
+                System.out.println(decoded + "\n");
+            }
+        }
+    }
+
+    private static boolean validateEncodedString(String input) {
+        // Check for invalid characters
+        Set<Character> validChars = Set.of('0', ' ');
+        for (char c : input.toCharArray()) {
+            if (!validChars.contains(c)) {
+                return false;
+            }
+        }
+
+        // Split into parts and validate structure
+        String[] parts = input.split(" ");
+        if (parts.length % 2 != 0) {
+            return false;
+        }
+
+        for (int i = 0; i < parts.length; i += 2) {
+            if (!parts[i].equals("0") && !parts[i].equals("00")) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static String encodeBinary(String binary) {
-
         StringBuilder sb = new StringBuilder();
         char[] chars = binary.toCharArray();
 
@@ -69,11 +112,10 @@ public class CipherEncoder {
     }
 
     private static String decodeToBinary(String encoded) {
-
         String[] parts = encoded.split(" ");
         StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < parts.length - 1; i += 2) {
+        for (int i = 0; i < parts.length; i += 2) {
             String currBit = parts[i].equals("0") ? "1" : "0";
             int length = parts[i + 1].length();
             sb.append(currBit.repeat(length));
@@ -83,7 +125,6 @@ public class CipherEncoder {
     }
 
     private static String decodeBinaryStr(String binaryStr) {
-
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < binaryStr.length(); i += 7) {
